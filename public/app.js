@@ -182,28 +182,29 @@ class EditableTimer extends React.Component {
 }
 
 class TimerForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {title_error: false};
+  }
   handleSubmit() {
     this.props.onFormSubmit({
       id: this.props.id,
       title: this.refs.title.value,
       project: this.refs.project.value
     })
+
   }
-  componentDidMount() {
-    $('form')
-  }
+
   render() {
     const submitText = this.props.id ? 'Update' : 'Create'
     return (
       <div className='ui centered card'>
         <div className='content'>
           <div className='ui form'>
-
             <div className='field'>
               <label>
                 Title
               </label>
-
               <input
                 type='text'
                 ref='title'
@@ -222,7 +223,7 @@ class TimerForm extends React.Component {
             </div>
             <div className='ui two bottom attached buttons'>
               <button
-                className='ui basic blue button'
+                className='ui blue submit button'
                 onClick={this.handleSubmit.bind(this)}
               >
                 {submitText}
@@ -241,6 +242,7 @@ class TimerForm extends React.Component {
 
   }
 }
+
 
 class ToggleableTimerForm extends React.Component {
   constructor(props) {
