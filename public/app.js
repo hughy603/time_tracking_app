@@ -2,24 +2,18 @@
 class TimersDashboard extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      timers: [
-        {
-          title: 'Practice',
-          project: 'Gym',
-          id: uuid.v4(),
-          elapsed: 43456099,
-          runningSince: Date.now()
-        },
-        {
-          title: 'Bake',
-          project: 'Kitchen',
-          id: uuid.v4(),
-          elapsed: 1273998,
-          runningSince: null
-        }
-      ]
-    };
+    this.state = {timers: [], error: null};
+    this.loadTimersFromServer = this.loadTimersFromServer.bind(this)
+    this.displayError = this.displayError.bind(this)
+  }
+  componentDidMount() {
+    this.loadTimersFromServer()
+    setInterval(this.loadTimersFromServer, 5000)
+  }
+  loadTimersFromServer() {
+    client.getTimers((serverTimers) => (
+    this.setState({timers: serverTimers})
+    ), this.displayError)
   }
   handleCreateFormSubmit(timer) {
     this.createTimer(timer);
@@ -36,14 +30,20 @@ class TimersDashboard extends React.Component {
   handleStopClick(timerId) {
     this.stopTimer(timerId)
   }
+  displayError(err) {
+    console.log(err);
+    this.setState({error: err.message})
+  }
   deleteTimer(timerId) {
     this.setState({
       timers: this.state.timers.filter(t => t.id !== timerId)
     })
+    client.deleteTimer({id: timerId})
   }
   createTimer(timer) {
     const t = helpers.newTimer(timer);
     this.setState({timers: this.state.timers.concat(t)})
+    client.createTimer(t, this.displayError)
   }
   updateTimer(attrs) {
     this.setState({
@@ -58,6 +58,7 @@ class TimersDashboard extends React.Component {
         }
       })
     })
+    client.updateTimer(attrs)
   }
   startTimer(timerId) {
     const now = Date.now();
@@ -71,6 +72,8 @@ class TimersDashboard extends React.Component {
         }
       })
     })
+
+    client.startTimer({id: timerId, start: now})
   }
   stopTimer(timerId) {
     const now = Date.now();
@@ -88,10 +91,14 @@ class TimersDashboard extends React.Component {
         }
       })
     })
+
+    client.stopTimer({id: timerId, start: now})
   }
   render() {
     return (
+
       <div className='ui three column centered grid'>
+        <ErrorMessage error={this.state.error} />
         <div className='column'>
           <EditableTimerList
             timers={this.state.timers}
@@ -104,6 +111,23 @@ class TimersDashboard extends React.Component {
         </div>
       </div>
     )
+  }
+}
+
+class ErrorMessage extends React.Component {
+  render() {
+    if (this.props.error) {
+      return (
+        <div className='three column row'>
+          <div className='ui inverted red segment'>
+            {this.props.error}
+          </div>
+        </div>
+      )
+    } else {
+      return null;
+    }
+
   }
 }
 

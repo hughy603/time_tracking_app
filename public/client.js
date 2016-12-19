@@ -1,25 +1,27 @@
 /* eslint-disable no-console */
 /* eslint-disable no-undef */
-window.client = (function () {
-  function getTimers(success) {
+window.client = (function() {
+  function getTimers(success, onError) {
     return fetch('/api/timers', {
       headers: {
-        Accept: 'application/json',
-      },
+        Accept: 'application/json'
+      }
     }).then(checkStatus)
       .then(parseJSON)
-      .then(success);
+      .then(success)
+      .catch(onError);
   }
 
-  function createTimer(data) {
+  function createTimer(data, onError) {
     return fetch('/api/timers', {
       method: 'post',
       body: JSON.stringify(data),
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-    }).then(checkStatus);
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }).then(checkStatus)
+      .catch(onError);
   }
 
   function updateTimer(data) {
@@ -27,9 +29,9 @@ window.client = (function () {
       method: 'put',
       body: JSON.stringify(data),
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
     }).then(checkStatus);
   }
 
@@ -38,9 +40,9 @@ window.client = (function () {
       method: 'delete',
       body: JSON.stringify(data),
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
     }).then(checkStatus);
   }
 
@@ -49,9 +51,9 @@ window.client = (function () {
       method: 'post',
       body: JSON.stringify(data),
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
     }).then(checkStatus);
   }
 
@@ -60,9 +62,9 @@ window.client = (function () {
       method: 'post',
       body: JSON.stringify(data),
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
     }).then(checkStatus);
   }
 
@@ -88,6 +90,6 @@ window.client = (function () {
     updateTimer,
     startTimer,
     stopTimer,
-    deleteTimer,
+    deleteTimer
   };
 }());
